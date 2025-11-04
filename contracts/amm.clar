@@ -105,16 +105,97 @@
                 balance-1: u1, ;; initially, balance is 0
             })
         )
-
-
-       ;; If pool does already exist, throw an error
-       (asserts! pool-does-not-exist ERR_POOL_ALREADY_EXISTS)
+        ;; If pool does already exist, throw an error
+        (asserts! pool-does-not-exist ERR_POOL_ALREADY_EXISTS)
         ;; If the token-0 principal is not "less than" the token-1 principal, throw an error
-        (asserts! (is-ok (correct-token-ordering token-0-principal token-1-principal)) ERR_INCORRECT_TOKEN_ORDERING)
+        (asserts!
+            (is-ok (correct-token-ordering token-0-principal token-1-principal))
+            ERR_INCORRECT_TOKEN_ORDERING
+        )
 
-         ;; Update the `pools` map with the new pool data
-         (map-set pools pool-id pool-data)
-         (print {action: "create-pool", data: pool-data})
-         (ok true)
+        ;; Update the `pools` map with the new pool data
+        (map-set pools pool-id pool-data)
+        (print {
+            action: "create-pool",
+            data: pool-data,
+        })
+        (ok true)
+    )
+)
+
+;; get-position-liquidity
+;; Given a Pool ID and a user address, returns how much liquidity the user has in the pool
+(define-read-only (get-position-liquidity
+        (pool-id (buff 20))
+        (owner principal)
+    )
+    (let (
+            ;; look up the position in the `positions` map
+            (position (map-get? positions {
+                pool-id: pool-id,
+                owner: owner,
+            }))
+            ;; if position exists, return the liquidity otherwise return 0
+            (existing-owner-liquidity (if (is-some position)
+
+                (unwrap-panic position)
+                { liquidity: u0 }
+            ))
+        )
+        (ok (get liquidity existing-owner-liquidity))
+    )
+)
+
+;; get-amounts
+;; Given the desired amount of token-0 and token-1, the minimum amounts of token-0 and token-1, and current reserves of token-0 and token-1,
+;; returns the amounts of token-0 and token-1 that should be provided to the pool to meet all constraints
+
+;; get-amounts
+;; Given the desired amount of token-0 and token-1, the minimum amounts of token-0 and token-1, and current reserves of token-0 and token-1,
+;; returns the amounts of token-0 and token-1 that should be provided to the pool to meet all constraints
+(define-private (get-amounts
+        (amount-0-desired uint)
+        (amount-1-desired uint)
+        (amount-0-min uint)
+        (amount-1-min uint)
+        (balance-0 uint)
+        (balance-1 uint)
+    )
+    (let (
+            ;; calculate ideal amount of token-1 that should be provided based on the current ratio of reserves if `amount-0-desired` can be fully used
+            (amount-1-given-0 (/ (* amount-0-desired balance-1) balance-0))
+            ;; calculate ideal amount of token-0 that should be provided based on the current ratio of reserves if `amount-1-desired` can be fully used
+            (amount-0-given-1 (/ (* amount-1-desired balance-0) balance-1))
+        )
+        (if ;; if ideal amount-1 is less than the desired amount-1
+            (<= amount-1-given-0 amount-1-desired)
+            (begin
+                ;; make sure that ideal amount-1 is >= minimum amount-1 otherwise throw an error
+                (asserts! (>= amount-1-given-0 amount-1-min)
+                    ERR_INSUFFICIENT_1_AMOUNT
+                )
+                ;; we can add amount-0-desired and ideal amount-1 to the pool successfully
+                (ok {
+                    amount-0: amount-0-desired,
+                    amount-1: amount-1-given-0,
+                })
+            )
+            ;; else if ideal amount-1 is greater than the desired amount-1, we can only add up to `amount-1-desired` to the pool
+            (begin
+                ;; make sure that ideal amount-0 is <= desired amount-0 otherwise throw an error
+                (asserts! (<= amount-0-given-1 amount-0-desired)
+                    ERR_INSUFFICIENT_0_AMOUNT
+                )
+                ;; make sure that ideal amount-0 is >= minimum amount-0 otherwise throw an error
+                (asserts! (>= amount-0-given-1 amount-0-min)
+                    ERR_INSUFFICIENT_0_AMOUNT
+                )
+                ;; we can add ideal amount-0 and amount-1-desired to the pool successfully
+                (ok {
+                    amount-0: amount-0-given-1,
+                    amount-1: amount-1-desired,
+                })
+            )
+        )
     )
 )
