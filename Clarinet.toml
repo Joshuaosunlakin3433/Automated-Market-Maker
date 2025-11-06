@@ -4,9 +4,8 @@ description = ''
 authors = []
 telemetry = true
 cache_dir = '.\.cache'
+requirements = []
 
-[[project.requirements]]
-contract_id = 'SP3FBR2AGK5H9QBDH3EEN6DF8EK8JY7RX8QJ5SVTE.sip-010-traits-ft-standard'
 [contracts.amm]
 path = 'contracts/amm.clar'
 clarity_version = 3
@@ -15,14 +14,14 @@ epoch = '3.2'
 [contracts.mock-token]
 path = 'contracts/mock-token.clar'
 clarity_version = 3
-epoch = 'latest'
-[repl.analysis]
-passes = ['check_checker']
+epoch = '3.2'
 
 [contracts.mock-token-2]
 path = 'contracts/mock-token.clar'
 clarity_version = 2
-epoch = 2.5
+epoch = '2.5'
+[repl.analysis]
+passes = ['check_checker']
 
 [repl.analysis.check_checker]
 strict = false
@@ -31,5 +30,5 @@ trusted_caller = false
 callee_filter = false
 
 [repl.remote_data]
-enabled = false
+enabled = true
 api_url = 'https://api.hiro.so'

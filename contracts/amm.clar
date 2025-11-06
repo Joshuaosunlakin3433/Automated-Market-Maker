@@ -11,7 +11,7 @@
 (define-constant ERR_INCORRECT_TOKEN_ORDERING (err u201))
 (define-constant ERR_INSUFFICIENT_LIQUIDITY_MINTED (err u202)) ;; insufficent liquidity amounts being added
 (define-constant ERR_INSUFFICIENT_LIQUIDITY_OWNED (err u203)) ;; not enough liquidity owned to withdraw the requested amount
-(define-constant ERR_INSUFFICIENT_LIQUIDITY_BURNED (err 204)) ;; insufficient liquidity amounts being removed
+(define-constant ERR_INSUFFICIENT_LIQUIDITY_BURNED (err u204)) ;; insufficient liquidity amounts being removed
 (define-constant ERR_INSUFFICIENT_INPUT_AMOUNT (err u205)) ;; insufficient input token amount for swap
 (define-constant ERR_INSUFFICIENT_LIQUIDITY_FOR_SWAP (err u206)) ;; insufficient liquidity in pool for swap
 (define-constant ERR_INSUFFICIENT_1_AMOUNT (err u207)) ;; insufficient amount of token 1 for swap
@@ -24,8 +24,6 @@
         token-0: principal,
         token-1: principal,
         fee: uint,
-        liquidity: uint,
-        balance-0: uint,
         liquidity: uint,
         balance-0: uint,
         balance-1: uint,
@@ -480,7 +478,6 @@
     )
 )
 
-
 ;; get-pool-data
 ;; Given a pool ID, returns the current state of the pool from the mapping
 (define-read-only (get-pool-data (pool-id (buff 20)))
@@ -488,5 +485,3 @@
         (ok pool-data)
     )
 )
-
- 
