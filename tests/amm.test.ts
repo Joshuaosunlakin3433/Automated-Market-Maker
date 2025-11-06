@@ -1,21 +1,76 @@
-
-import { describe, expect, it } from "vitest";
+import { Cl } from "@stacks/transactions";
 
 const accounts = simnet.getAccounts();
-const address1 = accounts.get("wallet_1")!;
+const deployer = accounts.get("deployer")!;
+const alice = accounts.get("wallet_1")!;
+const bob = accounts.get("wallet_2")!;
+const charlie = accounts.get("wallet_3")!;
 
-/*
-  The test below is an example. To learn more, read the testing documentation here:
-  https://docs.hiro.so/stacks/clarinet-js-sdk
-*/
+const mockTokenOne = Cl.contractPrincipal(deployer, "mock-token");
+const mockTokenTwo = Cl.contractPrincipal(deployer, "mock-token-2");
 
-describe("example tests", () => {
-  it("ensures simnet is well initialised", () => {
-    expect(simnet.blockHeight).toBeDefined();
-  });
+function createPool() {
+  return simnet.callPublicFn(
+    "amm",
+    "create-pool",
+    [mockTokenOne, mockTokenTwo, Cl.uint(500)],
+    alice
+  );
+}
 
-  // it("shows an example", () => {
-  //   const { result } = simnet.callReadOnlyFn("counter", "get-counter", [], address1);
-  //   expect(result).toBeUint(0);
-  // });
-});
+function addLiquidity(account: string, amount0: number, amount1: number) {
+  return simnet.callPublicFn(
+    "amm",
+    "add-liquidity",
+    [
+      mockTokenOne,
+      mockTokenTwo,
+      Cl.uint(500),
+      Cl.uint(amount0),
+      Cl.uint(amount1),
+      Cl.uint(0),
+      Cl.uint(0),
+    ],
+    account
+  );
+}
+
+function removeLiquidity(account: string, liquidity: number) {
+  return simnet.callPublicFn(
+    "amm",
+    "remove-liquidity",
+    [mockTokenOne, mockTokenTwo, Cl.uint(500), Cl.uint(liquidity)],
+    account
+  );
+}
+
+function swap(account: string, inputAmount: number, zeroForOne: boolean) {
+  return simnet.callPublicFn(
+    "amm",
+    "swap",
+    [
+      mockTokenOne,
+      mockTokenTwo,
+      Cl.uint(500),
+      Cl.uint(inputAmount),
+      Cl.bool(zeroForOne),
+    ],
+    account
+  );
+}
+
+function getPoolId() {
+  return simnet.callReadOnlyFn(
+    "amm",
+    "get-pool-id",
+    [
+      Cl.tuple({
+        "token-0": mockTokenOne,
+        "token-1": mockTokenTwo,
+        fee: Cl.uint(500),
+      }),
+    ],
+    alice // this is a read-only function so user address doesn't matter
+  );
+}
+
