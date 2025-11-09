@@ -11,20 +11,23 @@ export function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <Link href="/" className="text-xl sm:text-2xl font-bold bg-linear-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent hover:opacity-80 transition-opacity">
+          <Link
+            href="/"
+            className="text-xl sm:text-2xl font-bold bg-linear-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent hover:opacity-80 transition-opacity"
+          >
             Stacks AMM
           </Link>
 
           {/* Navigation Links - Hidden on mobile, shown on tablet+ */}
           <div className="hidden md:flex items-center gap-8">
-            <Link 
-              href="/" 
+            <Link
+              href="/"
               className="text-gray-700 hover:text-gray-900 font-medium transition-colors"
             >
               Swap
             </Link>
-            <Link 
-              href="/pools" 
+            <Link
+              href="/pools"
               className="text-gray-700 hover:text-gray-900 font-medium transition-colors"
             >
               Pools
@@ -65,14 +68,14 @@ export function Navbar() {
 
         {/* Mobile Navigation - Shown only on mobile */}
         <div className="md:hidden pb-3 flex gap-4 border-t border-white/20 pt-3">
-          <Link 
-            href="/" 
+          <Link
+            href="/"
             className="flex-1 text-center py-2 text-gray-700 hover:text-gray-900 font-medium transition-colors"
           >
             Swap
           </Link>
-          <Link 
-            href="/pools" 
+          <Link
+            href="/pools"
             className="flex-1 text-center py-2 text-gray-700 hover:text-gray-900 font-medium transition-colors"
           >
             Pools

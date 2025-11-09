@@ -128,12 +128,22 @@ export function Swap({ pools }: SwapProps) {
           onChange={(e) => setFromAmount(parseInt(e.target.value) || 0)}
         />
       </div>
-      
+
       {/* Swap Direction Arrow */}
       <div className="flex justify-center">
         <div className="bg-linear-to-br from-blue-100 to-purple-100 rounded-full p-3 shadow-md">
-          <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+          <svg
+            className="w-6 h-6 text-blue-600"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M19 14l-7 7m0 0l-7-7m7 7V3"
+            />
           </svg>
         </div>
       </div>
@@ -156,8 +166,12 @@ export function Swap({ pools }: SwapProps) {
       {/* Estimated Output Display */}
       <div className="bg-linear-to-br from-blue-50 to-purple-50 border-2 border-blue-200 rounded-xl p-4">
         <div className="flex justify-between items-center">
-          <span className="text-sm font-semibold text-gray-600">Estimated Output:</span>
-          <span className="text-lg font-bold text-blue-600">{estimatedToAmount.toString()}</span>
+          <span className="text-sm font-semibold text-gray-600">
+            Estimated Output:
+          </span>
+          <span className="text-lg font-bold text-blue-600">
+            {estimatedToAmount.toString()}
+          </span>
         </div>
       </div>
 

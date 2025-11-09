@@ -16,7 +16,7 @@ export function PoolsList({ pools }: PoolsListProps) {
         <span>Fee</span>
         <span>Liquidity</span>
       </div>
-      
+
       {/* Pool Items */}
       {pools.map((pool) => (
         <PoolListItem
@@ -37,7 +37,10 @@ export function PoolListItem({ pool }: { pool: Pool }) {
     <>
       {/* Desktop View - Table Row */}
       <div className="hidden md:grid grid-cols-4 place-items-center w-full bg-white dark:bg-gray-800 rounded-xl p-4 shadow-md hover:shadow-xl transition-shadow duration-300 border border-gray-200 dark:border-gray-700">
-        <span className="font-mono text-sm text-gray-700 dark:text-gray-300" title={pool.id}>
+        <span
+          className="font-mono text-sm text-gray-700 dark:text-gray-300"
+          title={pool.id}
+        >
           {abbreviateAddress(pool.id)}
         </span>
         <div className="flex items-center gap-2 text-gray-900 dark:text-white font-medium">
@@ -57,7 +60,9 @@ export function PoolListItem({ pool }: { pool: Pool }) {
             {token1Name}
           </Link>
         </div>
-        <span className="text-gray-700 dark:text-gray-300">{feesInPercentage}%</span>
+        <span className="text-gray-700 dark:text-gray-300">
+          {feesInPercentage}%
+        </span>
         <div className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
           {pool["balance-0"]} {token0Name} / {pool["balance-1"]} {token1Name}
         </div>
@@ -67,15 +72,22 @@ export function PoolListItem({ pool }: { pool: Pool }) {
       <div className="md:hidden bg-white dark:bg-gray-800 rounded-xl p-4 shadow-md hover:shadow-xl transition-shadow duration-300 border border-gray-200 dark:border-gray-700 space-y-3">
         {/* Pool ID */}
         <div className="flex justify-between items-center pb-3 border-b border-gray-200 dark:border-gray-700">
-          <span className="text-sm font-semibold text-gray-500 dark:text-gray-400">Pool ID</span>
-          <span className="font-mono text-sm text-gray-900 dark:text-white" title={pool.id}>
+          <span className="text-sm font-semibold text-gray-500 dark:text-gray-400">
+            Pool ID
+          </span>
+          <span
+            className="font-mono text-sm text-gray-900 dark:text-white"
+            title={pool.id}
+          >
             {abbreviateAddress(pool.id)}
           </span>
         </div>
 
         {/* Token Pair */}
         <div className="flex justify-between items-center">
-          <span className="text-sm font-semibold text-gray-500 dark:text-gray-400">Token Pair</span>
+          <span className="text-sm font-semibold text-gray-500 dark:text-gray-400">
+            Token Pair
+          </span>
           <div className="flex items-center gap-2 text-gray-900 dark:text-white font-medium">
             <Link
               href={`https://explorer.hiro.so/txid/${pool["token-0"]}?chain=testnet`}
@@ -97,16 +109,26 @@ export function PoolListItem({ pool }: { pool: Pool }) {
 
         {/* Fee */}
         <div className="flex justify-between items-center">
-          <span className="text-sm font-semibold text-gray-500 dark:text-gray-400">Fee</span>
-          <span className="text-gray-900 dark:text-white font-medium">{feesInPercentage}%</span>
+          <span className="text-sm font-semibold text-gray-500 dark:text-gray-400">
+            Fee
+          </span>
+          <span className="text-gray-900 dark:text-white font-medium">
+            {feesInPercentage}%
+          </span>
         </div>
 
         {/* Liquidity */}
         <div className="flex justify-between items-center pt-3 border-t border-gray-200 dark:border-gray-700">
-          <span className="text-sm font-semibold text-gray-500 dark:text-gray-400">Liquidity</span>
+          <span className="text-sm font-semibold text-gray-500 dark:text-gray-400">
+            Liquidity
+          </span>
           <div className="text-right text-sm text-gray-900 dark:text-white font-medium">
-            <div>{pool["balance-0"]} {token0Name}</div>
-            <div>{pool["balance-1"]} {token1Name}</div>
+            <div>
+              {pool["balance-0"]} {token0Name}
+            </div>
+            <div>
+              {pool["balance-1"]} {token1Name}
+            </div>
           </div>
         </div>
       </div>
