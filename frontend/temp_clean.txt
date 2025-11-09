@@ -1,0 +1,655 @@
+"use client";
+
+import { useStacks } from "@/hooks/use-stacks";
+import { Pool } from "@/lib/amm";
+import { useState } from "react";
+
+export interface AddLiquidityProps {
+  pools: Pool[];
+}
+
+export function AddLiquidity({ pools }: AddLiquidityProps) {
+  const [selectedPool, setSelectedPool] = useState<Pool>(pools[0]);
+  const [amount0, setAmount0] = useState<number>(0);
+  const [amount1, setAmount1] = useState<number>(0);
+  const { handleAddLiquidity } = useStacks();
+
+  return (
+    <div className="flex flex-col max-w-md w-full gap-4 p-6 bg-white border border-gray-200 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300">
+      <h1 className="text-2xl font-bold text-gray-900 Liquidity</h1>
+      <div className="flex flex-col gap-2">
+        <span className="font-semibold text-gray-700 ID</span>
+        <select
+          className="w-full px-4 py-3 rounded-xl border-2 border-gray-300 bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 cursor-pointer"
+          onChange={(e) => {
+            const poolId = e.target.value;
+            setSelectedPool(pools.find((pool) => pool.id === poolId)!);
+          }}
+        >
+          {pools.map((pool) => (
+            <option key={pool.id} value={pool.id}>
+              {pool.id}
+            </option>
+          ))}
+        </select>
+      </div>
+      <div className="flex flex-col gap-2">
+        <span className="font-semibold text-gray-700           Token 0 ({selectedPool["token-0"].split(".")[1]}) Amount
+        </span>
+        <input
+          type="number"
+          className="w-full px-4 py-3 rounded-xl border-2 border-gray-300 bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 placeholder:text-gray-400"
+          placeholder="Token 0"
+          value={amount0}
+          onChange={(e) => setAmount0(parseInt(e.target.value) || 0)}
+        />
+      </div>
+      <div className="flex flex-col gap-2">
+        <span className="font-semibold text-gray-700           Token 1 ({selectedPool["token-1"].split(".")[1]}) Amount
+        </span>
+        <input
+          type="number"
+          className="w-full px-4 py-3 rounded-xl border-2 border-gray-300 bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 placeholder:text-gray-400"
+          placeholder="Token 1"
+          value={amount1}
+          onChange={(e) => setAmount1(parseInt(e.target.value) || 0)}
+        />
+      </div>
+
+      <button
+        onClick={() => handleAddLiquidity(selectedPool, amount0, amount1)}
+        className="w-full bg-linear-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-bold py-3 px-6 rounded-xl transition-all duration-200 shadow-md hover:shadow-lg"
+      >
+        Add Liquidity
+      </button>
+    </div>
+  );
+}
+
+"use client";
+
+import { useStacks } from "@/hooks/use-stacks";
+import { useState } from "react";
+
+export function CreatePool() {
+  const { handleCreatePool } = useStacks();
+  const [token0, setToken0] = useState("");
+  const [token1, setToken1] = useState("");
+  const [fee, setFee] = useState(30);
+
+  return (
+    <div className="flex flex-col max-w-md w-full gap-4 p-6 bg-white border border-gray-200 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300">
+      <h1 className="text-2xl font-bold text-gray-900 New Pool</h1>
+      <div className="flex flex-col gap-2">
+        <span className="font-semibold text-gray-700 0</span>
+        <input
+          type="text"
+          className="w-full px-4 py-3 rounded-xl border-2 border-gray-300 bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 placeholder:text-gray-400"
+          placeholder="Token 0"
+          value={token0}
+          onChange={(e) => setToken0(e.target.value)}
+        />
+      </div>
+      <div className="flex flex-col gap-2">
+        <span className="font-semibold text-gray-700 1</span>
+        <input
+          type="text"
+          className="w-full px-4 py-3 rounded-xl border-2 border-gray-300 bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 placeholder:text-gray-400"
+          placeholder="Token 1"
+          value={token1}
+          onChange={(e) => setToken1(e.target.value)}
+        />
+      </div>
+      <div className="flex flex-col gap-2">
+        <span className="font-semibold text-gray-700 (basis points)</span>
+        <input
+          type="number"
+          className="w-full px-4 py-3 rounded-xl border-2 border-gray-300 bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 placeholder:text-gray-400"
+          placeholder="Fee"
+          max={10_000}
+          min={0}
+          value={fee}
+          onChange={(e) => setFee(parseInt(e.target.value))}
+        />
+        <span className="text-xs text-gray-500 30 (0.3%)</span>
+      </div>
+
+      <button
+        onClick={() => handleCreatePool(token0, token1, fee)}
+        className="w-full bg-linear-to-r from-green-500 to-teal-600 hover:from-green-600 hover:to-teal-700 text-white font-bold py-3 px-6 rounded-xl transition-all duration-200 shadow-md hover:shadow-lg"
+      >
+        Create Pool
+      </button>
+    </div>
+  );
+}
+
+"use client";
+
+import { useStacks } from "@/hooks/use-stacks";
+import { useState } from "react";
+
+const TOKEN_CONTRACTS = [
+  "ST1XF7QZ52F6WYHKP9NKR869NNN3ZEY6SXHQ9E497.mock-token",
+  "ST1XF7QZ52F6WYHKP9NKR869NNN3ZEY6SXHQ9E497.mock-token-2",
+];
+
+export function MintTokens() {
+  const { handleMintTokens } = useStacks();
+  const [selectedToken, setSelectedToken] = useState(TOKEN_CONTRACTS[0]);
+  const [amount, setAmount] = useState(10000000); // 10 million by default
+
+  return (
+    <div className="flex flex-col max-w-md w-full gap-4 p-6 bg-white border border-gray-200 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300">
+      <h1 className="text-2xl font-bold text-gray-900 Test Tokens</h1>
+      <p className="text-sm text-gray-600         Mint tokens to your wallet for testing the DEX
+      </p>
+
+      <div className="flex flex-col gap-2">
+        <span className="font-semibold text-gray-700         <select
+          className="w-full px-4 py-3 rounded-xl border-2 border-gray-300 bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 cursor-pointer"
+          value={selectedToken}
+          onChange={(e) => setSelectedToken(e.target.value)}
+        >
+          {TOKEN_CONTRACTS.map((contract) => (
+            <option key={contract} value={contract}>
+              {contract.split(".")[1]}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      <div className="flex flex-col gap-2">
+        <span className="font-semibold text-gray-700         <input
+          type="number"
+          className="w-full px-4 py-3 rounded-xl border-2 border-gray-300 bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 placeholder:text-gray-400"
+          placeholder="Amount"
+          value={amount}
+          onChange={(e) => setAmount(parseInt(e.target.value) || 0)}
+        />
+        <span className="text-xs text-gray-500           Suggested: 10000000 (10 million)
+        </span>
+      </div>
+
+      <button
+        onClick={() => handleMintTokens(selectedToken, amount)}
+        className="w-full bg-linear-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-bold py-3 px-6 rounded-xl transition-all duration-200 shadow-md hover:shadow-lg"
+      >
+        Mint Tokens
+      </button>
+    </div>
+  );
+}
+
+"use client";
+import { useStacks } from "@/hooks/use-stacks";
+import { abbreviateAddress } from "@/lib/stx-utils";
+import Link from "next/link";
+
+export function Navbar() {
+  const { userData, connectWallet, disconnectWallet } = useStacks();
+
+  return (
+    <nav className="sticky top-0 z-50 backdrop-blur-lg bg-white/90 border-b border-white/20 shadow-lg">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-16">
+          {/* Logo */}
+          <Link href="/" className="text-xl sm:text-2xl font-bold bg-linear-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent hover:opacity-80 transition-opacity">
+            Stacks AMM
+          </Link>
+
+          {/* Navigation Links - Hidden on mobile, shown on tablet+ */}
+          <div className="hidden md:flex items-center gap-8">
+            <Link 
+              href="/" 
+              className="text-gray-700 hover:text-gray-900 font-medium transition-colors"
+            >
+              Swap
+            </Link>
+            <Link 
+              href="/pools" 
+              className="text-gray-700 hover:text-gray-900 font-medium transition-colors"
+            >
+              Pools
+            </Link>
+          </div>
+
+          {/* Wallet Buttons */}
+          <div className="flex items-center gap-2 sm:gap-3">
+            {userData ? (
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  className="hidden sm:block rounded-lg bg-blue-500 px-3 sm:px-4 py-2 text-sm font-medium text-white hover:bg-blue-600 transition-colors shadow-md"
+                >
+                  {abbreviateAddress(userData.addresses?.stx[0].address)}
+                </button>
+                <button
+                  type="button"
+                  onClick={disconnectWallet}
+                  className="rounded-lg bg-red-500 px-3 sm:px-4 py-2 text-sm font-medium text-white hover:bg-red-600 transition-colors shadow-md"
+                >
+                  <span className="hidden sm:inline">Disconnect</span>
+                  <span className="sm:hidden">✕</span>
+                </button>
+              </div>
+            ) : (
+              <button
+                type="button"
+                onClick={connectWallet}
+                className="rounded-lg bg-linear-to-r from-blue-500 to-purple-600 px-3 sm:px-6 py-2 text-sm font-medium text-white hover:opacity-90 transition-opacity shadow-lg"
+              >
+                <span className="hidden sm:inline">Connect Wallet</span>
+                <span className="sm:hidden">Connect</span>
+              </button>
+            )}
+          </div>
+        </div>
+
+        {/* Mobile Navigation - Shown only on mobile */}
+        <div className="md:hidden pb-3 flex gap-4 border-t border-white/20 pt-3">
+          <Link 
+            href="/" 
+            className="flex-1 text-center py-2 text-gray-700 hover:text-gray-900 font-medium transition-colors"
+          >
+            Swap
+          </Link>
+          <Link 
+            href="/pools" 
+            className="flex-1 text-center py-2 text-gray-700 hover:text-gray-900 font-medium transition-colors"
+          >
+            Pools
+          </Link>
+        </div>
+      </div>
+    </nav>
+  );
+}
+
+import { Pool } from "@/lib/amm";
+import { abbreviateAddress } from "@/lib/stx-utils";
+import Link from "next/link";
+
+export interface PoolsListProps {
+  pools: Pool[];
+}
+
+export function PoolsList({ pools }: PoolsListProps) {
+  return (
+    <div className="flex flex-col gap-4">
+      {/* Desktop Table Header - Hidden on mobile */}
+      <div className="hidden md:grid grid-cols-4 place-items-center w-full bg-linear-to-r from-blue-500 to-purple-600 rounded-xl p-4 font-semibold text-white shadow-lg">
+        <span>ID</span>
+        <span>Token Pair</span>
+        <span>Fee</span>
+        <span>Liquidity</span>
+      </div>
+      
+      {/* Pool Items */}
+      {pools.map((pool) => (
+        <PoolListItem
+          key={`pool-${pool["token-0"]}-${pool["token-1"]}`}
+          pool={pool}
+        />
+      ))}
+    </div>
+  );
+}
+
+export function PoolListItem({ pool }: { pool: Pool }) {
+  const token0Name = pool["token-0"].split(".")[1];
+  const token1Name = pool["token-1"].split(".")[1];
+  const feesInPercentage = pool.fee / 10_000;
+
+  return (
+    <>
+      {/* Desktop View - Table Row */}
+      <div className="hidden md:grid grid-cols-4 place-items-center w-full bg-white rounded-xl p-4 shadow-md hover:shadow-xl transition-shadow duration-300 border border-gray-200         <span className="font-mono text-sm text-gray-700 title={pool.id}>
+          {abbreviateAddress(pool.id)}
+        </span>
+        <div className="flex items-center gap-2 text-gray-900 font-medium">
+          <Link
+            href={`https://explorer.hiro.so/txid/${pool["token-0"]}?chain=testnet`}
+            target="_blank"
+            className="hover:text-blue-500 transition-colors"
+          >
+            {token0Name}
+          </Link>
+          <span className="text-gray-400">/</span>
+          <Link
+            href={`https://explorer.hiro.so/txid/${pool["token-1"]}?chain=testnet`}
+            target="_blank"
+            className="hover:text-blue-500 transition-colors"
+          >
+            {token1Name}
+          </Link>
+        </div>
+        <span className="text-gray-700         <div className="flex items-center gap-2 text-sm text-gray-700           {pool["balance-0"]} {token0Name} / {pool["balance-1"]} {token1Name}
+        </div>
+      </div>
+
+      {/* Mobile View - Card Layout */}
+      <div className="md:hidden bg-white rounded-xl p-4 shadow-md hover:shadow-xl transition-shadow duration-300 border border-gray-200 space-y-3">
+        {/* Pool ID */}
+        <div className="flex justify-between items-center pb-3 border-b border-gray-200           <span className="text-sm font-semibold text-gray-500 ID</span>
+          <span className="font-mono text-sm text-gray-900 title={pool.id}>
+            {abbreviateAddress(pool.id)}
+          </span>
+        </div>
+
+        {/* Token Pair */}
+        <div className="flex justify-between items-center">
+          <span className="text-sm font-semibold text-gray-500 Pair</span>
+          <div className="flex items-center gap-2 text-gray-900 font-medium">
+            <Link
+              href={`https://explorer.hiro.so/txid/${pool["token-0"]}?chain=testnet`}
+              target="_blank"
+              className="hover:text-blue-500 transition-colors"
+            >
+              {token0Name}
+            </Link>
+            <span className="text-gray-400">/</span>
+            <Link
+              href={`https://explorer.hiro.so/txid/${pool["token-1"]}?chain=testnet`}
+              target="_blank"
+              className="hover:text-blue-500 transition-colors"
+            >
+              {token1Name}
+            </Link>
+          </div>
+        </div>
+
+        {/* Fee */}
+        <div className="flex justify-between items-center">
+          <span className="text-sm font-semibold text-gray-500           <span className="text-gray-900 font-medium">{feesInPercentage}%</span>
+        </div>
+
+        {/* Liquidity */}
+        <div className="flex justify-between items-center pt-3 border-t border-gray-200           <span className="text-sm font-semibold text-gray-500           <div className="text-right text-sm text-gray-900 font-medium">
+            <div>{pool["balance-0"]} {token0Name}</div>
+            <div>{pool["balance-1"]} {token1Name}</div>
+          </div>
+        </div>
+      </div>
+    </>
+  );
+}
+
+"use client";
+
+import { useStacks } from "@/hooks/use-stacks";
+import { getUserLiquidity, Pool } from "@/lib/amm";
+import { useEffect, useState } from "react";
+
+export interface RemoveLiquidityProps {
+  pools: Pool[];
+}
+
+export function RemoveLiquidity({ pools }: RemoveLiquidityProps) {
+  const { userData, handleRemoveLiquidity } = useStacks();
+  const [selectedPool, setSelectedPool] = useState<Pool>(pools[0]);
+  const [liquidity, setLiquidity] = useState(0);
+  const [userTotalLiquidity, setUserTotalLiquidity] = useState(0);
+
+  async function fetchUserLiquidity() {
+    const stxAddress = userData?.addresses?.stx[0].address;
+    if (!stxAddress) return;
+
+    getUserLiquidity(selectedPool, stxAddress).then((liquidity) => {
+      setUserTotalLiquidity(liquidity);
+    });
+  }
+
+  useEffect(() => {
+    fetchUserLiquidity();
+  }, [selectedPool, userData]);
+
+  return (
+    <div className="flex flex-col max-w-md w-full gap-4 p-6 bg-white border border-gray-200 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300">
+      <h1 className="text-2xl font-bold text-gray-900 Liquidity</h1>
+      <div className="flex flex-col gap-2">
+        <span className="font-semibold text-gray-700 ID</span>
+        <select
+          className="w-full px-4 py-3 rounded-xl border-2 border-gray-300 bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 cursor-pointer"
+          onChange={(e) => {
+            const poolId = e.target.value;
+            setSelectedPool(pools.find((pool) => pool.id === poolId)!);
+          }}
+        >
+          {pools.map((pool) => (
+            <option key={pool.id} value={pool.id}>
+              {pool.id}
+            </option>
+          ))}
+        </select>
+      </div>
+      <div className="flex flex-col gap-2">
+        <div className="flex items-center justify-between">
+          <span className="font-semibold text-gray-700           <span className="text-sm text-gray-600 {userTotalLiquidity}</span>
+        </div>
+        <input
+          type="number"
+          className="w-full px-4 py-3 rounded-xl border-2 border-gray-300 bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 placeholder:text-gray-400"
+          value={liquidity}
+          onChange={(e) => setLiquidity(parseInt(e.target.value) || 0)}
+        />
+      </div>
+
+      <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 space-y-2">
+        <div className="flex justify-between items-center">
+          <span className="text-sm text-gray-600 {selectedPool["token-0"].split(".")[1]}:</span>
+          <span className="font-semibold text-gray-900             {selectedPool.liquidity > 0
+              ? (
+                  (liquidity / selectedPool.liquidity) *
+                  selectedPool["balance-0"]
+                ).toFixed(2)
+              : 0}
+          </span>
+        </div>
+        <div className="flex justify-between items-center">
+          <span className="text-sm text-gray-600 {selectedPool["token-1"].split(".")[1]}:</span>
+          <span className="font-semibold text-gray-900             {selectedPool.liquidity > 0
+              ? (
+                  (liquidity / selectedPool.liquidity) *
+                  selectedPool["balance-1"]
+                ).toFixed(2)
+              : 0}
+          </span>
+        </div>
+      </div>
+
+      <button
+        className="w-full bg-linear-to-r from-red-500 to-pink-600 hover:from-red-600 hover:to-pink-700 text-white font-bold py-3 px-6 rounded-xl disabled:from-gray-400 disabled:to-gray-500 disabled:cursor-not-allowed transition-all duration-200 shadow-md hover:shadow-lg"
+        disabled={liquidity > userTotalLiquidity}
+        onClick={() => handleRemoveLiquidity(selectedPool, liquidity)}
+      >
+        Remove Liquidity
+      </button>
+    </div>
+  );
+}
+
+"use client";
+
+import { useStacks } from "@/hooks/use-stacks";
+import { Pool } from "@/lib/amm";
+import { useEffect, useMemo, useState } from "react";
+
+export interface SwapProps {
+  pools: Pool[];
+}
+
+export function Swap({ pools }: SwapProps) {
+  const { handleSwap } = useStacks();
+  const [fromToken, setFromToken] = useState<string>(pools[0]["token-0"]);
+  const [toToken, setToToken] = useState<string>(pools[0]["token-1"]);
+  const [fromAmount, setFromAmount] = useState<number>(0);
+  const [estimatedToAmount, setEstimatedToAmount] = useState<bigint>(BigInt(0));
+
+  const uniqueTokens = pools.reduce((acc, pool) => {
+    const token0 = pool["token-0"];
+    const token1 = pool["token-1"];
+
+    if (!acc.includes(token0)) {
+      acc.push(token0);
+    }
+
+    if (!acc.includes(token1)) {
+      acc.push(token1);
+    }
+
+    return acc;
+  }, [] as string[]);
+
+  const toTokensList = useMemo(() => {
+    const poolsWithFromToken = pools.filter(
+      (pool) => pool["token-0"] === fromToken || pool["token-1"] === fromToken
+    );
+    const tokensFromPools = poolsWithFromToken.reduce((acc, pool) => {
+      const token0 = pool["token-0"];
+      const token1 = pool["token-1"];
+
+      if (!acc.includes(token0) && token0 !== fromToken) {
+        acc.push(token0);
+      }
+
+      if (!acc.includes(token1) && token1 !== fromToken) {
+        acc.push(token1);
+      }
+
+      return acc;
+    }, [] as string[]);
+
+    return tokensFromPools;
+  }, [fromToken]);
+
+  function estimateSwapOutput() {
+    const pool = pools.find(
+      (p) =>
+        (p["token-0"] === fromToken && p["token-1"] === toToken) ||
+        (p["token-0"] === toToken && p["token-1"] === fromToken)
+    );
+    if (!pool) return;
+
+    if (fromAmount === 0) return;
+
+    const x = BigInt(pool["balance-0"]);
+    const y = BigInt(pool["balance-1"]);
+    const k = x * y;
+    const feesFloat = pool.fee / 10_000;
+
+    if (fromToken === pool["token-0"]) {
+      const deltaX = BigInt(fromAmount);
+      // (x+dx) * (y-dy) = k
+      // y-dy = k/(x+dx)
+      // dy = y - (k/(x+dx))
+      const xPlusDeltaX = x + deltaX;
+      const yMinusDeltaY = k / xPlusDeltaX;
+      const deltaY = y - yMinusDeltaY;
+      const deltaYMinusFees =
+        deltaY - BigInt(Math.ceil(Number(deltaY) * feesFloat));
+      setEstimatedToAmount(deltaYMinusFees);
+    } else {
+      // (x-dx) * (y+dy) = k
+      // x-dx = k/(y+dy)
+      // dx = x - (k/(y+dy))
+      const deltaY = BigInt(fromAmount);
+      const yPlusDeltaY = y + deltaY;
+      const xMinusDeltaX = k / yPlusDeltaY;
+      const deltaX = x - xMinusDeltaX;
+      const deltaXMinusFees =
+        deltaX - BigInt(Math.ceil(Number(deltaX) * feesFloat));
+      setEstimatedToAmount(deltaXMinusFees);
+    }
+  }
+
+  useEffect(() => {
+    estimateSwapOutput();
+  }, [fromToken, toToken, fromAmount]);
+
+  // Auto-update toToken when fromToken changes
+  useEffect(() => {
+    if (toTokensList.length > 0 && !toTokensList.includes(toToken)) {
+      setToToken(toTokensList[0]);
+    }
+  }, [toTokensList, toToken]);
+
+  return (
+    <div className="flex flex-col max-w-xl w-full gap-4 p-6 bg-white/95 backdrop-blur border border-white/20 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300">
+      <h1 className="text-2xl font-bold text-gray-900">Swap Tokens</h1>
+
+      <div className="flex flex-col gap-2">
+        <span className="font-semibold text-gray-700">From</span>
+        <select
+          className="w-full border-2 border-gray-300 bg-white text-gray-900 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 cursor-pointer hover:border-blue-400 font-medium"
+          value={fromToken}
+          onChange={(e) => setFromToken(e.target.value)}
+        >
+          {uniqueTokens.map((token) => (
+            <option key={token} value={token}>
+              {token.split(".")[1]}
+            </option>
+          ))}
+        </select>
+        <input
+          type="number"
+          className="w-full px-4 py-3 rounded-xl border-2 border-gray-300 bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 placeholder:text-gray-400"
+          placeholder="Amount"
+          value={fromAmount}
+          onChange={(e) => setFromAmount(parseInt(e.target.value) || 0)}
+        />
+      </div>
+      
+      {/* Swap Direction Arrow */}
+      <div className="flex justify-center">
+        <div className="bg-linear-to-br from-blue-100 to-purple-100 rounded-full p-3 shadow-md">
+          <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+          </svg>
+        </div>
+      </div>
+
+      <div className="flex flex-col gap-2">
+        <span className="font-semibold text-gray-700">To</span>
+        <select
+          className="w-full border-2 border-gray-300 bg-white text-gray-900 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 cursor-pointer hover:border-blue-400 font-medium"
+          value={toToken}
+          onChange={(e) => setToToken(e.target.value)}
+        >
+          {toTokensList.map((token) => (
+            <option key={token} value={token}>
+              {token.split(".")[1]}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      {/* Estimated Output Display */}
+      <div className="bg-linear-to-br from-blue-50 to-purple-50 border-2 border-blue-200 rounded-xl p-4">
+        <div className="flex justify-between items-center">
+          <span className="text-sm font-semibold text-gray-600">Estimated Output:</span>
+          <span className="text-lg font-bold text-blue-600">{estimatedToAmount.toString()}</span>
+        </div>
+      </div>
+
+      <button
+        className="w-full bg-linear-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-bold py-3 px-6 rounded-xl disabled:from-gray-400 disabled:to-gray-500 disabled:cursor-not-allowed transition-all duration-200 shadow-md hover:shadow-lg"
+        disabled={estimatedToAmount <= BigInt(0) || fromAmount === 0}
+        onClick={() => {
+          const pool = pools.find(
+            (p) =>
+              (p["token-0"] === fromToken && p["token-1"] === toToken) ||
+              (p["token-0"] === toToken && p["token-1"] === fromToken)
+          );
+          if (!pool) return;
+
+          const zeroForOne = fromToken === pool["token-0"];
+          handleSwap(pool, fromAmount, zeroForOne);
+        }}
+      >
+        Swap
+      </button>
+    </div>
+  );
+}
+

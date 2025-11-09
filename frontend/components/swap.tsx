@@ -104,13 +104,13 @@ export function Swap({ pools }: SwapProps) {
   }, [toTokensList, toToken]);
 
   return (
-    <div className="flex flex-col max-w-xl w-full gap-4 p-6 border rounded-md">
-      <h1 className="text-xl font-bold">Swap</h1>
+    <div className="flex flex-col max-w-xl w-full gap-4 p-6 bg-white/95 backdrop-blur border border-white/20 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300">
+      <h1 className="text-2xl font-bold text-gray-900">Swap Tokens</h1>
 
-      <div className="flex flex-col gap-1">
-        <span className="font-bold">From</span>
+      <div className="flex flex-col gap-2">
+        <span className="font-semibold text-gray-700">From</span>
         <select
-          className="w-full border-2 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-800 rounded-lg px-4 py-2 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 cursor-pointer hover:border-blue-400"
+          className="w-full border-2 border-gray-300 bg-white text-gray-900 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 cursor-pointer hover:border-blue-400 font-medium"
           value={fromToken}
           onChange={(e) => setFromToken(e.target.value)}
         >
@@ -122,16 +122,26 @@ export function Swap({ pools }: SwapProps) {
         </select>
         <input
           type="number"
-          className="w-full px-4 py-3 rounded-xl border-2 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 placeholder:text-gray-400"
+          className="w-full px-4 py-3 rounded-xl border-2 border-gray-300 bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 placeholder:text-gray-400"
           placeholder="Amount"
           value={fromAmount}
           onChange={(e) => setFromAmount(parseInt(e.target.value) || 0)}
         />
       </div>
-      <div className="flex flex-col gap-1">
-        <span className="font-bold">To</span>
+      
+      {/* Swap Direction Arrow */}
+      <div className="flex justify-center">
+        <div className="bg-linear-to-br from-blue-100 to-purple-100 rounded-full p-3 shadow-md">
+          <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+          </svg>
+        </div>
+      </div>
+
+      <div className="flex flex-col gap-2">
+        <span className="font-semibold text-gray-700">To</span>
         <select
-          className="w-full border-2 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-800 rounded-lg px-4 py-2 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 cursor-pointer hover:border-blue-400"
+          className="w-full border-2 border-gray-300 bg-white text-gray-900 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 cursor-pointer hover:border-blue-400 font-medium"
           value={toToken}
           onChange={(e) => setToToken(e.target.value)}
         >
@@ -143,10 +153,16 @@ export function Swap({ pools }: SwapProps) {
         </select>
       </div>
 
-      <span>Estimated Output: {estimatedToAmount.toString()}</span>
+      {/* Estimated Output Display */}
+      <div className="bg-linear-to-br from-blue-50 to-purple-50 border-2 border-blue-200 rounded-xl p-4">
+        <div className="flex justify-between items-center">
+          <span className="text-sm font-semibold text-gray-600">Estimated Output:</span>
+          <span className="text-lg font-bold text-blue-600">{estimatedToAmount.toString()}</span>
+        </div>
+      </div>
 
       <button
-        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded  disabled:bg-gray-700 disabled:cursor-not-allowed"
+        className="w-full bg-linear-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-bold py-3 px-6 rounded-xl disabled:from-gray-400 disabled:to-gray-500 disabled:cursor-not-allowed transition-all duration-200 shadow-md hover:shadow-lg"
         disabled={estimatedToAmount <= BigInt(0) || fromAmount === 0}
         onClick={() => {
           const pool = pools.find(
