@@ -15,7 +15,7 @@ export function RemoveLiquidity({ pools }: RemoveLiquidityProps) {
   const [userTotalLiquidity, setUserTotalLiquidity] = useState(0);
 
   async function fetchUserLiquidity() {
-    const stxAddress = userData?.profile.stxAddress.testnet;
+    const stxAddress = userData?.addresses?.stx[0].address;
     if (!stxAddress) return;
 
     getUserLiquidity(selectedPool, stxAddress).then((liquidity) => {
@@ -33,7 +33,7 @@ export function RemoveLiquidity({ pools }: RemoveLiquidityProps) {
       <div className="flex flex-col gap-1">
         <span className="font-bold">Pool ID</span>
         <select
-          className="border-2 border-gray-500 rounded-lg px-4 py-2 text-black"
+          className="w-full px-4 py-3 rounded-xl border-2 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 text-white"
           onChange={(e) => {
             const poolId = e.target.value;
             setSelectedPool(pools.find((pool) => pool.id === poolId)!);
@@ -52,21 +52,31 @@ export function RemoveLiquidity({ pools }: RemoveLiquidityProps) {
           <span>Max: {userTotalLiquidity}</span>
         </div>
         <input
-          type="text"
-          className="border-2 border-gray-500 rounded-lg px-4 py-2 text-black"
+          type="number"
+          className="w-full px-4 py-3 rounded-xl border-2 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 text-white"
           value={liquidity}
-          onChange={(e) => setLiquidity(parseInt(e.target.value))}
+          onChange={(e) => setLiquidity(parseInt(e.target.value) || 0)}
         />
       </div>
 
       <div className="flex flex-col gap-1">
         <span>
           Withdraw {selectedPool["token-0"].split(".")[1]}:{" "}
-          {(liquidity / selectedPool.liquidity) * selectedPool["balance-0"]}
+          {selectedPool.liquidity > 0
+            ? (
+                (liquidity / selectedPool.liquidity) *
+                selectedPool["balance-0"]
+              ).toFixed(2)
+            : 0}
         </span>
         <span>
           Withdraw {selectedPool["token-1"].split(".")[1]}:{" "}
-          {(liquidity / selectedPool.liquidity) * selectedPool["balance-1"]}
+          {selectedPool.liquidity > 0
+            ? (
+                (liquidity / selectedPool.liquidity) *
+                selectedPool["balance-1"]
+              ).toFixed(2)
+            : 0}
         </span>
       </div>
 

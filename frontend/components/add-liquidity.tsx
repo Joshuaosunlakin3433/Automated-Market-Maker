@@ -20,7 +20,7 @@ export function AddLiquidity({ pools }: AddLiquidityProps) {
       <div className="flex flex-col gap-1">
         <span className="font-bold">Pool ID</span>
         <select
-          className="border-2 border-gray-500 rounded-lg px-4 py-2 text-black"
+          className="w-full px-4 py-3 rounded-xl border-2 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 text-white"
           onChange={(e) => {
             const poolId = e.target.value;
             setSelectedPool(pools.find((pool) => pool.id === poolId)!);
@@ -38,11 +38,11 @@ export function AddLiquidity({ pools }: AddLiquidityProps) {
           Token 0 ({selectedPool["token-0"].split(".")[1]}) Amount
         </span>
         <input
-          type="text"
-          className="border-2 border-gray-500 rounded-lg px-4 py-2 text-black"
+          type="number"
+          className="w-full px-4 py-3 rounded-xl border-2 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 text-white"
           placeholder="Token 0"
           value={amount0}
-          onChange={(e) => setAmount0(parseInt(e.target.value))}
+          onChange={(e) => setAmount0(parseInt(e.target.value) || 0)}
         />
       </div>
       <div className="flex flex-col gap-1">
@@ -50,11 +50,11 @@ export function AddLiquidity({ pools }: AddLiquidityProps) {
           Token 1 ({selectedPool["token-1"].split(".")[1]}) Amount
         </span>
         <input
-          type="text"
-          className="border-2 border-gray-500 rounded-lg px-4 py-2 text-black"
+          type="number"
+          className="w-full px-4 py-3 rounded-xl border-2 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 text-white"
           placeholder="Token 1"
           value={amount1}
-          onChange={(e) => setAmount1(parseInt(e.target.value))}
+          onChange={(e) => setAmount1(parseInt(e.target.value) || 0)}
         />
       </div>
 

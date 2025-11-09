@@ -1,4 +1,5 @@
 import { Pool } from "@/lib/amm";
+import { abbreviateAddress } from "@/lib/stx-utils";
 import Link from "next/link";
 
 export interface PoolsListProps {
@@ -31,7 +32,9 @@ export function PoolListItem({ pool }: { pool: Pool }) {
 
   return (
     <div className="grid grid-cols-4 place-items-center w-full bg-gray-800 justify-between p-4">
-      <span>{pool.id}</span>
+      <span className="font-mono text-sm" title={pool.id}>
+        {abbreviateAddress(pool.id)}
+      </span>
       <div className="flex items-center gap-2">
         <Link
           href={`https://explorer.hiro.so/txid/${pool["token-0"]}?chain=testnet`}

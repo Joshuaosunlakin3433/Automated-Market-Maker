@@ -1,13 +1,15 @@
 "use client";
 import { useStacks } from "@/hooks/use-stacks";
+import { useTheme } from "@/hooks/use-theme";
 import { abbreviateAddress } from "@/lib/stx-utils";
 import Link from "next/link";
 
 export function Navbar() {
   const { userData, connectWallet, disconnectWallet } = useStacks();
+  const { theme, toggleTheme } = useTheme();
 
   return (
-    <nav className="flex w-full items-center justify-between gap-4 p-4 h-16 border-b border-gray-500">
+    <nav className="flex w-full items-center justify-between gap-4 p-4 h-16 border-b border-gray-300 dark:border-gray-500">
       <Link href="/" className="text-2xl font-bold">
         Stacks AMM
       </Link>
@@ -20,6 +22,13 @@ export function Navbar() {
         </Link>
       </div>
 
+      <button
+        onClick={toggleTheme}
+        className="rounded-lg bg-gray-700 px-4 py-2 text-sm font-medium teest-white hover:bg-gray-600"
+      >
+        {theme === "dark" ? "☀️ Light" : "🌙 Dark"}
+      </button>
+
       <div className="flex items-center gap-2">
         {userData ? (
           <div className="flex items-center gap-2">
@@ -27,7 +36,7 @@ export function Navbar() {
               type="button"
               className="rounded-lg bg-blue-500 px-4 py-2 text-sm font-medium text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
             >
-              {abbreviateAddress(userData.profile.stxAddress.testnet)}
+              {abbreviateAddress(userData.addresses?.stx[0].address)}
             </button>
             <button
               type="button"

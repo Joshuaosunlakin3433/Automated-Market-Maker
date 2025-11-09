@@ -96,6 +96,13 @@ export function Swap({ pools }: SwapProps) {
     estimateSwapOutput();
   }, [fromToken, toToken, fromAmount]);
 
+  // Auto-update toToken when fromToken changes
+  useEffect(() => {
+    if (toTokensList.length > 0 && !toTokensList.includes(toToken)) {
+      setToToken(toTokensList[0]);
+    }
+  }, [toTokensList, toToken]);
+
   return (
     <div className="flex flex-col max-w-xl w-full gap-4 p-6 border rounded-md">
       <h1 className="text-xl font-bold">Swap</h1>
@@ -103,34 +110,34 @@ export function Swap({ pools }: SwapProps) {
       <div className="flex flex-col gap-1">
         <span className="font-bold">From</span>
         <select
-          className="border-2 border-gray-500 rounded-lg px-4 py-2 text-black"
+          className="w-full border-2 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-800 rounded-lg px-4 py-2 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 cursor-pointer hover:border-blue-400"
           value={fromToken}
           onChange={(e) => setFromToken(e.target.value)}
         >
           {uniqueTokens.map((token) => (
             <option key={token} value={token}>
-              {token}
+              {token.split(".")[1]}
             </option>
           ))}
         </select>
         <input
           type="number"
-          className="border-2 border-gray-500 rounded-lg px-4 py-2 text-black"
+          className="w-full px-4 py-3 rounded-xl border-2 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 placeholder:text-gray-400"
           placeholder="Amount"
           value={fromAmount}
-          onChange={(e) => setFromAmount(parseInt(e.target.value))}
+          onChange={(e) => setFromAmount(parseInt(e.target.value) || 0)}
         />
       </div>
       <div className="flex flex-col gap-1">
         <span className="font-bold">To</span>
         <select
-          className="border-2 border-gray-500 rounded-lg px-4 py-2 text-black"
+          className="w-full border-2 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-800 rounded-lg px-4 py-2 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 cursor-pointer hover:border-blue-400"
           value={toToken}
           onChange={(e) => setToToken(e.target.value)}
         >
           {toTokensList.map((token) => (
             <option key={token} value={token}>
-              {token}
+              {token.split(".")[1]}
             </option>
           ))}
         </select>
@@ -140,7 +147,7 @@ export function Swap({ pools }: SwapProps) {
 
       <button
         className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded  disabled:bg-gray-700 disabled:cursor-not-allowed"
-        disabled={estimatedToAmount < 0}
+        disabled={estimatedToAmount <= BigInt(0) || fromAmount === 0}
         onClick={() => {
           const pool = pools.find(
             (p) =>

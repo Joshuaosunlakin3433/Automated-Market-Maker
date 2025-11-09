@@ -250,3 +250,20 @@ export async function getUserLiquidity(pool: Pool, user: string) {
   if (userLiquidityResult.value.type !== "uint") return 0;
   return parseInt(userLiquidityResult.value.value.toString());
 }
+
+export async function mintTokens(
+  tokenContract: string,
+  amount: number,
+  recipient: string
+) {
+  const [contractAddress, contractName] = tokenContract.split(".");
+
+  const txOptions = {
+    contractAddress,
+    contractName,
+    functionName: "mint",
+    functionArgs: [uintCV(amount), principalCV(recipient)],
+  };
+
+  return txOptions;
+}
