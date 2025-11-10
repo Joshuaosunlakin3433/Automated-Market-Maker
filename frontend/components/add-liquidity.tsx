@@ -12,7 +12,7 @@ export function AddLiquidity({ pools }: AddLiquidityProps) {
   const [selectedPool, setSelectedPool] = useState<Pool>(pools[0]);
   const [amount0, setAmount0] = useState<number>(0);
   const [amount1, setAmount1] = useState<number>(0);
-  const { handleAddLiquidity } = useStacks();
+  const { handleAddLiquidity, isLoading } = useStacks();
 
   return (
     <div className="flex flex-col max-w-md w-full gap-4 p-6 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300">
@@ -63,10 +63,33 @@ export function AddLiquidity({ pools }: AddLiquidityProps) {
       </div>
 
       <button
+        disabled={isLoading}
         onClick={() => handleAddLiquidity(selectedPool, amount0, amount1)}
-        className="w-full bg-linear-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-bold py-3 px-6 rounded-xl transition-all duration-200 shadow-md hover:shadow-lg"
+        className="w-full bg-linear-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-bold py-3 px-6 rounded-xl transition-all duration-200 shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
       >
-        Add Liquidity
+        {isLoading ? (
+          <span className="flex items-center justify-center gap-2">
+            <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
+              <circle
+                className="opacity-25"
+                cx="12"
+                cy="12"
+                r="10"
+                stroke="currentColor"
+                strokeWidth="4"
+                fill="none"
+              />
+              <path
+                className="opacity-75"
+                fill="currentColor"
+                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+              />
+            </svg>
+            Processing...
+          </span>
+        ) : (
+          "Add Liquidity"
+        )}
       </button>
     </div>
   );

@@ -9,7 +9,7 @@ export interface SwapProps {
 }
 
 export function Swap({ pools }: SwapProps) {
-  const { handleSwap } = useStacks();
+  const { handleSwap, isLoading } = useStacks();
   const [fromToken, setFromToken] = useState<string>(pools[0]["token-0"]);
   const [toToken, setToToken] = useState<string>(pools[0]["token-1"]);
   const [fromAmount, setFromAmount] = useState<number>(0);
@@ -177,7 +177,9 @@ export function Swap({ pools }: SwapProps) {
 
       <button
         className="w-full bg-linear-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-bold py-3 px-6 rounded-xl disabled:from-gray-400 disabled:to-gray-500 disabled:cursor-not-allowed transition-all duration-200 shadow-md hover:shadow-lg"
-        disabled={estimatedToAmount <= BigInt(0) || fromAmount === 0}
+        disabled={
+          estimatedToAmount <= BigInt(0) || fromAmount === 0 || isLoading
+        }
         onClick={() => {
           const pool = pools.find(
             (p) =>
@@ -190,7 +192,29 @@ export function Swap({ pools }: SwapProps) {
           handleSwap(pool, fromAmount, zeroForOne);
         }}
       >
-        Swap
+        {isLoading ? (
+          <span className="flex items-center justify-center gap-2">
+            <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
+              <circle
+                className="opacity-25"
+                cx="12"
+                cy="12"
+                r="10"
+                stroke="currentColor"
+                strokeWidth="4"
+                fill="none"
+              />
+              <path
+                className="opacity-75"
+                fill="currentColor"
+                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+              />
+            </svg>
+            Processing...
+          </span>
+        ) : (
+          "Swap"
+        )}
       </button>
     </div>
   );

@@ -50,6 +50,7 @@ export type Pool = {
   "balance-1": number;
 };
 
+
 // getAllPools
 // Returns an array of Pool objects
 export async function getAllPools() {
@@ -220,6 +221,7 @@ export async function removeLiquidity(pool: Pool, liquidity: number) {
 }
 
 export async function swap(pool: Pool, amount: number, zeroForOne: boolean) {
+  
   const txOptions = {
     contractAddress: AMM_CONTRACT_ADDRESS,
     contractName: AMM_CONTRACT_NAME,

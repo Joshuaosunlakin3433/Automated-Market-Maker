@@ -18,6 +18,12 @@ import {
 import { STACKS_TESTNET } from "@stacks/network";
 import { PostConditionMode } from "@stacks/transactions";
 import { useEffect, useState } from "react";
+import {
+  showSuccessToast,
+  showErrorToast,
+  showMintSuccessToast,
+  showPoolCreatedToast,
+} from "@/lib/toast-helpers";
 
 const appDetails = {
   name: "Full Range AMM",
@@ -26,6 +32,7 @@ const appDetails = {
 
 export function useStacks() {
   const [userData, setUserData] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   // Single source of truth for loading data
   const loadUserData = () => {
@@ -59,6 +66,7 @@ export function useStacks() {
   }
 
   async function handleMintTokens(tokenContract: string, amount: number) {
+    setIsLoading(true);
     try {
       if (!userData) throw new Error("User not connected");
       const userAddress = userData?.addresses?.stx[0]?.address;
@@ -70,20 +78,21 @@ export function useStacks() {
         appDetails,
         network: STACKS_TESTNET,
         onFinish: (data) => {
-          window.alert("Sent mint tokens transaction");
+          showMintSuccessToast(data.txId, "Tokens minted! 🪙 ");
           console.log(data);
         },
         postConditionMode: PostConditionMode.Allow,
       });
     } catch (_err) {
       const err = _err as Error;
-      console.log(err);
-      window.alert(err.message);
-      return;
+      showErrorToast(err.message);
+    } finally {
+      setIsLoading(false);
     }
   }
 
   async function handleCreatePool(token0: string, token1: string, fee: number) {
+    setIsLoading(true);
     try {
       if (!userData) throw new Error("User not connected");
       const userAddress = userData?.addresses?.stx[0]?.address;
@@ -95,38 +104,44 @@ export function useStacks() {
         appDetails,
         network: STACKS_TESTNET, // Explicitly set testnet
         onFinish: (data) => {
-          window.alert("Sent create pool transaction");
+          showPoolCreatedToast(data.txId, "Pool Successfully created! 🎉");
           console.log(data);
         },
         postConditionMode: PostConditionMode.Allow,
       });
     } catch (_err) {
       const err = _err as Error;
-      console.log(err);
-      window.alert(err.message);
-      return;
+      showErrorToast(err.message);
+    } finally {
+      setIsLoading(false);
     }
   }
 
   async function handleSwap(pool: Pool, amount: number, zeroForOne: boolean) {
+    if (!userData) return;
+
+    setIsLoading(true);
+
     try {
       if (!userData) throw new Error("User not connected");
+
       const options = await swap(pool, amount, zeroForOne);
       await openContractCall({
         ...options,
         appDetails,
         network: STACKS_TESTNET,
         onFinish: (data) => {
-          window.alert("Sent swap transaction");
           console.log(data);
+          showSuccessToast(data.txId, "Swap successful! 🎉");
         },
         postConditionMode: PostConditionMode.Allow,
       });
     } catch (_err) {
       const err = _err as Error;
       console.log(err);
-      window.alert(err.message);
-      return;
+      showErrorToast(err.message);
+    } finally {
+      setIsLoading(false);
     }
   }
 
@@ -135,6 +150,7 @@ export function useStacks() {
     amount0: number,
     amount1: number
   ) {
+    setIsLoading(true);
     try {
       if (!userData) throw new Error("User not connected");
       const options = await addLiquidity(pool, amount0, amount1);
@@ -143,20 +159,21 @@ export function useStacks() {
         appDetails,
         network: STACKS_TESTNET,
         onFinish: (data) => {
-          window.alert("Sent add liquidity transaction");
+          showSuccessToast(data.txId, "Liquidity added! 💧");
           console.log({ data });
         },
         postConditionMode: PostConditionMode.Allow,
       });
     } catch (_err) {
       const err = _err as Error;
-      console.log(err);
-      window.alert(err.message);
-      return;
+      showErrorToast(err.message);
+    } finally {
+      setIsLoading(false);
     }
   }
 
   async function handleRemoveLiquidity(pool: Pool, liquidity: number) {
+    setIsLoading(true);
     try {
       if (!userData) throw new Error("User not connected");
       const options = await removeLiquidity(pool, liquidity);
@@ -165,16 +182,16 @@ export function useStacks() {
         appDetails,
         network: STACKS_TESTNET,
         onFinish: (data) => {
-          window.alert("Sent remove liquidity transaction");
+          showSuccessToast(data.txId, "Liquidity removed ✅");
           console.log(data);
         },
         postConditionMode: PostConditionMode.Allow,
       });
     } catch (_err) {
       const err = _err as Error;
-      console.log(err);
-      window.alert(err.message);
-      return;
+      showErrorToast(err.message);
+    } finally {
+      setIsLoading(false);
     }
   }
 
@@ -196,6 +213,7 @@ export function useStacks() {
 
   return {
     userData,
+    isLoading,
     handleCreatePool,
     handleSwap,
     handleAddLiquidity,
