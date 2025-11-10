@@ -10,12 +10,14 @@ A full-featured Automated Market Maker (AMM) decentralized exchange built on the
 ## ✨ Features
 
 ### 🔄 Core DEX Functionality
+
 - **Token Swapping** - Swap between any tokens in available pools with real-time price estimation
 - **Liquidity Pools** - Create and manage liquidity pools with custom fee tiers
 - **Add/Remove Liquidity** - Provide liquidity to earn trading fees
 - **Token Minting** - Mint test tokens for development and testing
 
 ### 🎨 Modern UX/UI
+
 - **Loading States** - Smooth loading indicators on all transactions
 - **Toast Notifications** - Real-time transaction feedback with clickable Explorer links
 - **Skeleton Screens** - Professional loading skeletons during data fetching
@@ -23,6 +25,7 @@ A full-featured Automated Market Maker (AMM) decentralized exchange built on the
 - **Dark Mode** - Full dark mode support with smooth transitions
 
 ### 🛠️ Technical Features
+
 - **Zustand State Management** - Global state management with optimized selectors
 - **TypeScript** - Full type safety across the entire application
 - **Next.js 16** - Latest Next.js with App Router and React Server Components
@@ -40,17 +43,20 @@ A full-featured Automated Market Maker (AMM) decentralized exchange built on the
 ### Installation
 
 1. **Clone the repository**
+
    ```bash
    git clone https://github.com/Joshuaosunlakin3433/Automated-Market-Maker.git
    cd Automated-Market-Maker/frontend
    ```
 
 2. **Install dependencies**
+
    ```bash
    npm install
    ```
 
 3. **Run the development server**
+
    ```bash
    npm run dev
    ```
@@ -70,27 +76,32 @@ const AMM_CONTRACT_NAME = "amm";
 ## 📖 How to Use
 
 ### 1️⃣ Connect Your Wallet
+
 Click "Connect Wallet" in the navigation bar and approve the connection in your Stacks wallet.
 
 ### 2️⃣ Mint Test Tokens
+
 1. Navigate to the "Pools" tab
 2. Select a token contract
 3. Enter the amount to mint (default: 10,000,000)
 4. Click "Mint Tokens" and confirm in your wallet
 
 ### 3️⃣ Create a Liquidity Pool
+
 1. Go to "Pools" → "Pool Management"
 2. Enter Token 0 and Token 1 contract addresses
 3. Set the fee tier (default: 30 basis points = 0.3%)
 4. Click "Create Pool" and confirm
 
 ### 4️⃣ Swap Tokens
+
 1. On the home page, select tokens to swap
 2. Enter the amount
 3. Review the estimated output
 4. Click "Swap" and confirm the transaction
 
 ### 5️⃣ Add Liquidity
+
 1. Navigate to "Pools" tab
 2. Select a pool
 3. Enter amounts for both tokens
@@ -130,6 +141,7 @@ frontend/
 ## 🛠️ Tech Stack
 
 ### Frontend
+
 - **[Next.js 16](https://nextjs.org/)** - React framework with App Router
 - **[React 19](https://react.dev/)** - UI library
 - **[TypeScript](https://www.typescriptlang.org/)** - Type safety
@@ -138,6 +150,7 @@ frontend/
 - **[React Hot Toast](https://react-hot-toast.com/)** - Toast notifications
 
 ### Blockchain
+
 - **[Stacks.js](https://github.com/hirosystems/stacks.js)** - Stacks blockchain SDK
 - **[Clarity](https://clarity-lang.org/)** - Smart contract language
 - **Stacks Testnet** - Test network for development
@@ -147,27 +160,32 @@ frontend/
 This project demonstrates:
 
 ### State Management
+
 - **React useState** → Migrated to **Zustand** for global state
 - Optimized selectors: `const value = useStore((state) => state.value)`
 - Centralized state for wallet, loading, and transaction data
 
 ### Async Patterns
+
 - Loading states with `finally` blocks for cleanup
 - Error handling with try/catch
 - Toast notifications on transaction completion
 
 ### Next.js Features
+
 - App Router with server components
 - Automatic `loading.tsx` for skeleton screens
 - File-based routing
 
 ### UX Patterns
+
 - Skeleton screens during data fetching
 - Loading spinners on buttons
 - Clickable transaction notifications with Explorer links
 - Responsive design with mobile-first approach
 
 ### TypeScript
+
 - Interface definitions for type safety
 - Generic types for reusable components
 - Type inference with Zustand
@@ -175,6 +193,7 @@ This project demonstrates:
 ## 🚧 Future Enhancements
 
 Potential features to add:
+
 - [ ] Transaction history with localStorage
 - [ ] Price charts and analytics
 - [ ] Slippage tolerance settings
@@ -215,6 +234,7 @@ This project is licensed under the MIT License.
 ## 👨‍💻 Author
 
 **Joshua Osunlakin**
+
 - GitHub: [@Joshuaosunlakin3433](https://github.com/Joshuaosunlakin3433)
 
 ---
