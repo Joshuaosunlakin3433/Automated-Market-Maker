@@ -1,11 +1,14 @@
 "use client";
-import { useStacks } from "@/hooks/use-stacks";
+
 import { abbreviateAddress } from "@/lib/stx-utils";
+import { useWalletStore } from "@/store/wallet-store";
 import Link from "next/link";
 
 export function Navbar() {
-  const { userData, connectWallet, disconnectWallet } = useStacks();
-
+  // const { userData, connectWallet, disconnectWallet } = useWalletStore();
+  const userData = useWalletStore((state) => state.userData);
+  const connectWallet = useWalletStore((state) => state.connectWallet);
+  const disconnectWallet = useWalletStore((state) => state.disconnectWallet);
   return (
     <nav className="sticky top-0 z-50 backdrop-blur-lg bg-white/90 border-b border-white/20 shadow-lg">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

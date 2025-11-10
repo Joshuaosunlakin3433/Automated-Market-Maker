@@ -1,6 +1,6 @@
 "use client";
 
-import { useStacks } from "@/hooks/use-stacks";
+import { useWalletStore } from "@/store/wallet-store";
 import { useState } from "react";
 
 const TOKEN_CONTRACTS = [
@@ -9,7 +9,10 @@ const TOKEN_CONTRACTS = [
 ];
 
 export function MintTokens() {
-  const { handleMintTokens, isLoading } = useStacks();
+  // const { handleMintTokens, isLoading } = useWalletStore();
+  const handleMintTokens = useWalletStore((state) => state.handleMintTokens);
+  const isLoading = useWalletStore((state) => state.isLoading);
+
   const [selectedToken, setSelectedToken] = useState(TOKEN_CONTRACTS[0]);
   const [amount, setAmount] = useState(10000000); // 10 million by default
 

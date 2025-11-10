@@ -1,7 +1,7 @@
 "use client";
 
-import { useStacks } from "@/hooks/use-stacks";
 import { Pool } from "@/lib/amm";
+import { useWalletStore } from "@/store/wallet-store";
 import { useEffect, useMemo, useState } from "react";
 
 export interface SwapProps {
@@ -9,7 +9,9 @@ export interface SwapProps {
 }
 
 export function Swap({ pools }: SwapProps) {
-  const { handleSwap, isLoading } = useStacks();
+  // const { handleSwap, isLoading } = useWalletStore();
+  const handleSwap = useWalletStore((state) => state.handleSwap);
+  const isLoading = useWalletStore((state) => state.isLoading);
   const [fromToken, setFromToken] = useState<string>(pools[0]["token-0"]);
   const [toToken, setToToken] = useState<string>(pools[0]["token-1"]);
   const [fromAmount, setFromAmount] = useState<number>(0);

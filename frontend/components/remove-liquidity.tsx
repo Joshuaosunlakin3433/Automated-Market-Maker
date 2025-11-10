@@ -1,7 +1,7 @@
 "use client";
 
-import { useStacks } from "@/hooks/use-stacks";
 import { getUserLiquidity, Pool } from "@/lib/amm";
+import { useWalletStore } from "@/store/wallet-store";
 import { useEffect, useState } from "react";
 
 export interface RemoveLiquidityProps {
@@ -9,7 +9,12 @@ export interface RemoveLiquidityProps {
 }
 
 export function RemoveLiquidity({ pools }: RemoveLiquidityProps) {
-  const { userData, handleRemoveLiquidity, isLoading } = useStacks();
+  // const { userData, handleRemoveLiquidity, isLoading } = useWalletStore();
+  const userData = useWalletStore((state) => state.userData);
+  const handleRemoveLiquidity = useWalletStore(
+    (state) => state.handleRemoveLiquidity
+  );
+  const isLoading = useWalletStore((state) => state.isLoading);
   const [selectedPool, setSelectedPool] = useState<Pool>(pools[0]);
   const [liquidity, setLiquidity] = useState(0);
   const [userTotalLiquidity, setUserTotalLiquidity] = useState(0);

@@ -1,10 +1,12 @@
 "use client";
 
-import { useStacks } from "@/hooks/use-stacks";
+import { useWalletStore } from "@/store/wallet-store";
 import { useState } from "react";
 
 export function CreatePool() {
-  const { handleCreatePool, isLoading } = useStacks();
+  // const { handleCreatePool, isLoading } = useWalletStore();
+  const handleCreatePool = useWalletStore((state) => state.handleCreatePool);
+  const isLoading = useWalletStore((state) => state.isLoading);
   const [token0, setToken0] = useState("");
   const [token1, setToken1] = useState("");
   const [fee, setFee] = useState(30);

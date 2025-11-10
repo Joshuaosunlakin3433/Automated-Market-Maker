@@ -1,7 +1,7 @@
 "use client";
 
-import { useStacks } from "@/hooks/use-stacks";
 import { Pool } from "@/lib/amm";
+import { useWalletStore } from "@/store/wallet-store";
 import { useState } from "react";
 
 export interface AddLiquidityProps {
@@ -12,7 +12,12 @@ export function AddLiquidity({ pools }: AddLiquidityProps) {
   const [selectedPool, setSelectedPool] = useState<Pool>(pools[0]);
   const [amount0, setAmount0] = useState<number>(0);
   const [amount1, setAmount1] = useState<number>(0);
-  const { handleAddLiquidity, isLoading } = useStacks();
+  // const { handleAddLiquidity, isLoading } = useWalletStore();
+
+  const handleAddLiquidity = useWalletStore(
+    (state) => state.handleAddLiquidity
+  );
+  const isLoading = useWalletStore((state) => state.isLoading);
 
   return (
     <div className="flex flex-col max-w-md w-full gap-4 p-6 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300">

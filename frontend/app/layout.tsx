@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { Navbar } from "@/components/navbar";
 import { Toaster } from "react-hot-toast";
+import { WalletInitializer } from "@/components/wallet-initializer";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -19,6 +20,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
+        <WalletInitializer />
         <div className="flex min-h-screen flex-col gap-8 w-full">
           <Navbar />
           {children}
