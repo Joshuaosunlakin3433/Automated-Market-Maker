@@ -268,7 +268,7 @@ This project is licensed under the MIT License.
 
 - Built during Stacks Internship program
 - Inspired by Uniswap V2 AMM design
-- Thanks to the Stacks and Clarity communities
+- Thanks to the Stacks and LearnWeb3
 
 ---
 
