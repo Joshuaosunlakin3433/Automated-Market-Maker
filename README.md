@@ -252,7 +252,7 @@ This project is licensed under the MIT License.
 
 ## 🔗 Links
 
-- **Live Demo**: [Coming Soon]
+- **Live Demo**: [https://automated-market-maker.vercel.app/](https://automated-market-maker.vercel.app/)
 - **GitHub**: [https://github.com/Joshuaosunlakin3433/Automated-Market-Maker](https://github.com/Joshuaosunlakin3433/Automated-Market-Maker)
 - **Stacks Explorer**: [https://explorer.hiro.so/?chain=testnet](https://explorer.hiro.so/?chain=testnet)
 - **Stacks Documentation**: [https://docs.stacks.co/](https://docs.stacks.co/)
